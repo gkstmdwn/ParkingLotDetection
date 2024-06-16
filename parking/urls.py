@@ -1,13 +1,7 @@
 from django.urls import path
-from django.shortcuts import render
-
 from . import views
 
 urlpatterns = [
-    path('upload/', views.upload_video, name='upload_video'),
-    path('videos/', views.video_list, name='video_list'),
-
+    path('upload/', views.upload_image, name='upload_image'),
+    path('images/', views.image_list, name='image_list'),
 ]
-
-def home(request):
-    return render(request, 'home.html')

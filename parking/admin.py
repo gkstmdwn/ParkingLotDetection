@@ -1,4 +1,4 @@
 from django.contrib import admin
-from .models import ParkingVideo
+from .models import ParkingImage
 
-admin.site.register(ParkingVideo)
+admin.site.register(ParkingImage)

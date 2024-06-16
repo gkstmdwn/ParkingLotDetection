@@ -1,7 +1,7 @@
 from django import forms
-from .models import ParkingVideo
+from .models import ParkingImage
 
-class ParkingVideoForm(forms.ModelForm):
+class ParkingImageForm(forms.ModelForm):
     class Meta:
-        model = ParkingVideo
-        fields = ['video']
+        model = ParkingImage
+        fields = ['image']

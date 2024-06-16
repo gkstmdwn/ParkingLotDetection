@@ -1,0 +1,19 @@
+<!-- image_list.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Processed Images</title>
+</head>
+<body>
+    <h1>Processed Images</h1>
+    <ul>
+        {% for image in processed_images %}
+            <li>
+                <img src="{{ image.result_image.url }}" alt="Processed Image">
+            </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

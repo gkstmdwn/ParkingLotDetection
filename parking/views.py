@@ -1,43 +1,41 @@
-import shutil
-
 from django.shortcuts import render, redirect
-from .forms import ParkingVideoForm
-from .models import ParkingVideo
-import cv2
-import os
-from django.conf import settings
 
+from parking_project import settings
+from .forms import ParkingImageForm
+from .models import ParkingImage
+import cv2  # OpenCV for image processing
+import numpy as np
 def home(request):
     return render(request, 'home.html')
-
-
-def upload_video(request):
+def upload_image(request):
     if request.method == 'POST':
-        form = ParkingVideoForm(request.POST, request.FILES)
+        form = ParkingImageForm(request.POST, request.FILES)
         if form.is_valid():
-            parking_video = form.save()
-            process_video(parking_video)
-            return redirect('video_list')
+            parking_image = form.save()
+            process_image(parking_image)
+            return redirect('image_list')
     else:
-        form = ParkingVideoForm()
-    return render(request, 'upload_video.html', {'form': form})
+        form = ParkingImageForm()
+    return render(request, 'upload_image.html', {'form': form})
 
+def process_image(parking_image):
+    # 이미지 분석 및 처리 로직
+    # AI 모델 로드 및 이미지 분석
+    image_path = parking_image.image.path
+    image = cv2.imread(image_path)
 
-def process_video(parking_video):
-    video_path = parking_video.video.path
-    result_video_dir = os.path.join(settings.MEDIA_ROOT, "result_videos")
-    result_video_path = os.path.join(settings.MEDIA_ROOT, f"result_videos/result_{parking_video.id}.mp4")
-    if not os.path.exists(result_video_dir):
-        os.makedirs(result_video_dir)
+    # Dummy processing: converting image to grayscale
+    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    result_path = f"{settings.MEDIA_ROOT}/result_images/result_{parking_image.id}.jpg"
+    cv2.imwrite(result_path, gray)
 
-    shutil.copy(video_path, result_video_path)
+    parking_image.result_image = f"result_images/result_{parking_image.id}.jpg"
+    parking_image.processed = True
+    parking_image.save()
 
-    if os.path.exists(result_video_path):
-        parking_video.result_video = f"result_videos/result_{parking_video.id}.mp4"
-        parking_video.processed = True
-        parking_video.save()
-
-
-def video_list(request):
-    videos = ParkingVideo.objects.filter(processed=True)
-    return render(request, 'video_list.html', {'videos': videos})
+def image_list(request):
+    processed_images = ParkingImage.objects.filter(processed=True)
+    context = {
+        'processed_images': processed_images
+    }
+    return render(request, 'image_list.html', {'images': processed_images})
