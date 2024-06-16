@@ -1,5 +1,5 @@
 <!-- image_list.html -->
-
+{%load static%}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,11 +9,9 @@
 <body>
     <h1>Processed Images</h1>
     <ul>
-        {% for image in processed_images %}
-            <li>
-                <img src="{{ image.result_image.url }}" alt="Processed Image">
-            </li>
-        {% endfor %}
+        <li>
+            <img src="{% static '/image/image0.jpg' %}" alt="Processed Image">
+        </li>
     </ul>
 </body>
 </html>

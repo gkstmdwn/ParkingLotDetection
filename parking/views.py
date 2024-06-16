@@ -5,6 +5,11 @@ from .forms import ParkingImageForm
 from .models import ParkingImage
 import cv2  # OpenCV for image processing
 import numpy as np
+from ultralytics import YOLO
+import numpy as np
+import os
+import shutil
+
 def home(request):
     return render(request, 'home.html')
 def upload_image(request):
@@ -23,6 +28,36 @@ def process_image(parking_image):
     # AI 모델 로드 및 이미지 분석
     image_path = parking_image.image.path
     image = cv2.imread(image_path)
+    model=YOLO(r'best.pt')
+    results = model.predict(image, save=True, conf=0.25)
+    try:
+        os.remove("/parking/static/image/image0.jpg")
+    except:
+        pass
+    try:
+        os.remove("runs/detect/predict2")
+    except:
+        pass
+    try:
+        os.rmdir("runs/detect/predict2")
+    except:
+        pass
+    try:
+        shutil.move(r"./runs/detect/predict2/image0.jpg", "./parking/static/image/image0.jpg")
+    except:
+        pass
+    try:
+        os.remove("runs/detect/predict/parking_images")
+    except:
+        pass
+    try:
+        os.remove("runs/detect/predict2")
+    except:
+        pass
+    try:
+        os.rmdir("runs/detect/predict2")
+    except:
+        pass
 
     # Dummy processing: converting image to grayscale
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
