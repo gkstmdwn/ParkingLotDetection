@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Processed Videos</title>
+</head>
+<body>
+    <h1>Processed Videos</h1>
+    <ul>
+        {% for video in videos %}
+        <li>
+            <h2>{{ video.title }}</h2>
+            <video width="320" height="240" controls>
+                <source src="{{ video.result_video.url }}" type="video/mp4">
+            </video>
+        </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

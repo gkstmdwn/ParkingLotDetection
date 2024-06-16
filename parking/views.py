@@ -1,10 +1,11 @@
+import shutil
+
 from django.shortcuts import render, redirect
 from .forms import ParkingVideoForm
 from .models import ParkingVideo
 import cv2
 import os
 from django.conf import settings
-
 
 def home(request):
     return render(request, 'home.html')
@@ -24,18 +25,15 @@ def upload_video(request):
 
 def process_video(parking_video):
     video_path = parking_video.video.path
-    video = cv2.VideoCapture(video_path)
-    success, frame = video.read()
+    result_video_dir = os.path.join(settings.MEDIA_ROOT, "result_videos")
+    result_video_path = os.path.join(settings.MEDIA_ROOT, f"result_videos/result_{parking_video.id}.mp4")
+    if not os.path.exists(result_video_dir):
+        os.makedirs(result_video_dir)
 
-    if success:
-        frame_path = os.path.join(settings.MEDIA_ROOT, f"frames/frame_{parking_video.id}.jpg")
-        cv2.imwrite(frame_path, frame)
+    shutil.copy(video_path, result_video_path)
 
-        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-        result_path = os.path.join(settings.MEDIA_ROOT, f"result_images/result_{parking_video.id}.jpg")
-        cv2.imwrite(result_path, gray)
-
-        parking_video.result_image = f"result_images/result_{parking_video.id}.jpg"
+    if os.path.exists(result_video_path):
+        parking_video.result_video = f"result_videos/result_{parking_video.id}.mp4"
         parking_video.processed = True
         parking_video.save()
 
